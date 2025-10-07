@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition/screens/dashboard.dart/dashboard_screen.dart';
+import 'package:nutrition/screens/dashboard/dashboard_screen.dart';
 import 'package:nutrition/screens/loading/loading_screen.dart';
 import 'package:nutrition/screens/start_screen.dart';
 import 'package:nutrition/services/firebase_auth.dart';

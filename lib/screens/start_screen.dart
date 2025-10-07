@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition/screens/auth/auth_screen.dart';
+import 'package:nutrition/screens/auth/create_account_screen.dart';
+import 'package:nutrition/screens/auth/signin_screen.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -16,9 +17,15 @@ class StartScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              _navigateToAuthScreen(context);
+              _navigateToCreateAccountScreen(context);
             },
             child: Text(" Get Started"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _navigateToSignInScreen(context);
+            },
+            child: Text(" Sign In"),
           ),
         ],
       ),
@@ -26,9 +33,16 @@ class StartScreen extends StatelessWidget {
   }
 }
 
-void _navigateToAuthScreen(BuildContext context) {
+void _navigateToCreateAccountScreen(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => AuthScreen()),
+    MaterialPageRoute(builder: (context) => CreateAccountScreen()),
+  );
+}
+
+void _navigateToSignInScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SignInScreen()),
   );
 }

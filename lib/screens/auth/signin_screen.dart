@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/firebase_auth.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -31,9 +31,9 @@ class _AuthScreenState extends State<AuthScreen> {
             Text(_errorMessage, style: TextStyle(color: Colors.red)),
             ElevatedButton(
               onPressed: () {
-                _createAccount();
+                _signIn();
               },
-              child: Text("Create Account"),
+              child: Text("Sign In"),
             ),
           ],
         ),
@@ -41,12 +41,17 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  void _createAccount() async {
+  void _popPage() {
+    Navigator.pop(context);
+  }
+
+  void _signIn() async {
     try {
-      await AuthService().createAccount(
+      await AuthService().signIn(
         email: _emailController.text,
         password: _passwordController.text,
       );
+      _popPage();
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = e.message ?? "An unknown error occurred";

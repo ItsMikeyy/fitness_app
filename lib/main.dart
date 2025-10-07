@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:nutrition/screens/start_screen.dart';
+import 'package:nutrition/screens/auth/auth_layout.dart';
 import 'package:nutrition/services/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,6 +18,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter Demo', home: StartScreen());
+    return MaterialApp(title: 'Flutter Demo', home: AuthLayout());
   }
 }

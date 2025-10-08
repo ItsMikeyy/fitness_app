@@ -26,7 +26,7 @@ class AppDatabase {
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         email TEXT NOT NULL,
         name TEXT NOT NULL,
         profilePicture TEXT,
@@ -42,7 +42,7 @@ class AppDatabase {
         targetCarbs TEXT,
         targetFats TEXT,
         createdAt TEXT NOT NULL,
-        updatedAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
       )
     ''');
   }
@@ -52,6 +52,21 @@ class AppDatabase {
     final result = await db.query('users', where: 'id = ?', whereArgs: [id]);
     print(result);
     return result.map((e) => UserModel.fromJson(e)).firstOrNull;
+  }
+
+  Future<int> insertUser(UserModel user) async {
+    final db = await instance.database;
+    return await db.insert('users', user.toJson());
+  }
+
+  Future<int> updateUser(UserModel user) async {
+    final db = await instance.database;
+    return await db.update(
+      'users',
+      user.toJson(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
   }
 
   Future<void> close() async {

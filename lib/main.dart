@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition/screens/auth/auth_layout.dart';
 import 'package:nutrition/services/firebase_options.dart';
+import 'package:nutrition/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +20,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter Demo', home: AuthLayout());
+    return ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MaterialApp(title: 'Nutrition App', home: AuthLayout()),
+    );
   }
 }

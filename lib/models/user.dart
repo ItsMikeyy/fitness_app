@@ -14,8 +14,8 @@ class UserModel {
   final String? targetProtein;
   final String? targetCarbs;
   final String? targetFats;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   UserModel({
     required this.id,
@@ -56,4 +56,23 @@ class UserModel {
     createdAt: json['createdAt'],
     updatedAt: json['updatedAt'],
   );
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'email': email,
+    'name': name,
+    'profilePicture': profilePicture,
+    'gender': gender,
+    'height': height,
+    'weight': weight,
+    'age': age,
+    'activityLevel': activityLevel,
+    'goal': goal,
+    'targetWeight': targetWeight,
+    'targetCalories': targetCalories,
+    'targetProtein': targetProtein,
+    'targetCarbs': targetCarbs,
+    'targetFats': targetFats,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+  };
 }

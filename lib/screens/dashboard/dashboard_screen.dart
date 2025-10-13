@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutrition/screens/meal/meal_screen.dart';
 import 'package:nutrition/screens/profile/profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -12,7 +13,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   // List of pages to display based on selected tab
-  final List<Widget> _pages = [const HomePage(), const ProfilePage()];
+  final List<Widget> _pages = [
+    const HomePage(),
+    const MealPage(),
+    const ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.restaurant), label: "Meal"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
         onTap: _onItemTapped,

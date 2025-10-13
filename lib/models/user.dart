@@ -1,4 +1,6 @@
-class UserModel {
+import 'base_model.dart';
+
+class UserModel implements BaseModel {
   final String id;
   final String email;
   final String name;
@@ -14,8 +16,10 @@ class UserModel {
   final String? targetProtein;
   final String? targetCarbs;
   final String? targetFats;
-  final String? createdAt;
-  final String? updatedAt;
+  @override
+  final String createdAt;
+  @override
+  final String updatedAt;
 
   UserModel({
     required this.id,

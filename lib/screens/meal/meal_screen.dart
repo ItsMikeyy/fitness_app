@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition/models/meal.dart';
 import 'package:nutrition/screens/AddMeal/add_meal_screen.dart';
+import 'package:nutrition/screens/mealDetails/meal_details_screen.dart';
 import 'package:nutrition/providers/user_provider.dart';
 import 'package:nutrition/services/nutrition_service.dart';
 import 'package:provider/provider.dart';
@@ -157,14 +158,19 @@ class _MealPageState extends State<MealPage> {
                     SizedBox(width: 8),
                     _buildNutritionChip('${meal.protein}g protein'),
                     SizedBox(width: 8),
-                    _buildNutritionChip('${meal.mealType}'),
+                    _buildNutritionChip(meal.mealType),
                   ],
                 ),
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              // TODO: Navigate to meal details
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MealDetailsScreen(meal: meal),
+                ),
+              );
             },
           ),
         );

@@ -5,7 +5,8 @@ import 'package:nutrition/services/nutrition_service.dart';
 import 'package:provider/provider.dart';
 
 class AddMealScreen extends StatefulWidget {
-  const AddMealScreen({super.key});
+  final Meal? meal;
+  const AddMealScreen({super.key, this.meal});
 
   @override
   State<AddMealScreen> createState() => _AddMealScreenState();
@@ -24,10 +25,32 @@ class _AddMealScreenState extends State<AddMealScreen> {
   final TextEditingController mealImageUrl = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _populateFields();
+  }
+
+  void _populateFields() {
+    if (widget.meal != null) {
+      final meal = widget.meal!;
+      mealName.text = meal.name;
+      mealDescription.text = meal.description;
+      mealCalories.text = meal.calories.toString();
+      mealProtein.text = meal.protein.toString();
+      mealCarbs.text = meal.carbs.toString();
+      mealFats.text = meal.fats.toString();
+      mealServings.text = meal.servings.toString();
+      mealNotes.text = meal.notes ?? '';
+      mealType.text = meal.mealType;
+      mealImageUrl.text = meal.imageUrl ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Meal'),
+        title: Text(widget.meal != null ? 'Edit Meal' : 'Add New Meal'),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
@@ -41,7 +64,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
               TextFormField(
                 controller: mealName,
                 decoration: InputDecoration(
-                  labelText: "Meal Name *",
+                  labelText: widget.meal?.name != null
+                      ? "Meal Name *"
+                      : "Meal Name",
                   border: OutlineInputBorder(),
                 ),
                 textCapitalization: TextCapitalization.words,
@@ -62,6 +87,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
               // Meal Type Dropdown
               DropdownButtonFormField<String>(
+                value: mealType.text.isEmpty ? null : mealType.text,
                 decoration: InputDecoration(
                   labelText: "Meal Type *",
                   border: OutlineInputBorder(),
@@ -186,7 +212,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   ),
                 ),
                 child: Text(
-                  "Save Meal",
+                  widget.meal != null ? "Update Meal" : "Save Meal",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -220,25 +246,42 @@ class _AddMealScreenState extends State<AddMealScreen> {
       int fats = int.tryParse(mealFats.text) ?? 0;
       int servings = int.tryParse(mealServings.text) ?? 1;
 
-      // Create meal object
-      Meal meal = Meal(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        userId: context.read<UserProvider>().currentUser!.id,
-        name: mealName.text,
-        description: mealDescription.text,
-        calories: calories,
-        protein: protein,
-        carbs: carbs,
-        fats: fats,
-        servings: servings,
-        notes: mealNotes.text.isEmpty ? null : mealNotes.text,
-        mealType: mealType.text,
-        imageUrl: mealImageUrl.text.isEmpty ? null : mealImageUrl.text,
-        createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String(),
-      );
-
-      print(meal);
+      // Create or update meal object
+      Meal meal;
+      if (widget.meal != null) {
+        // Update existing meal
+        meal = widget.meal!.copyWith(
+          name: mealName.text,
+          description: mealDescription.text,
+          calories: calories,
+          protein: protein,
+          carbs: carbs,
+          fats: fats,
+          servings: servings,
+          notes: mealNotes.text.isEmpty ? null : mealNotes.text,
+          mealType: mealType.text,
+          imageUrl: mealImageUrl.text.isEmpty ? null : mealImageUrl.text,
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+      } else {
+        // Create new meal
+        meal = Meal(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          userId: context.read<UserProvider>().currentUser!.id,
+          name: mealName.text,
+          description: mealDescription.text,
+          calories: calories,
+          protein: protein,
+          carbs: carbs,
+          fats: fats,
+          servings: servings,
+          notes: mealNotes.text.isEmpty ? null : mealNotes.text,
+          mealType: mealType.text,
+          imageUrl: mealImageUrl.text.isEmpty ? null : mealImageUrl.text,
+          createdAt: DateTime.now().toIso8601String(),
+          updatedAt: DateTime.now().toIso8601String(),
+        );
+      }
 
       // Save meal using NutritionService
       final nutritionService = NutritionService();
@@ -247,7 +290,11 @@ class _AddMealScreenState extends State<AddMealScreen> {
       // Show success message and navigate back
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Meal "${meal.name}" saved successfully!'),
+          content: Text(
+            widget.meal != null
+                ? 'Meal "${meal.name}" updated successfully!'
+                : 'Meal "${meal.name}" saved successfully!',
+          ),
           backgroundColor: Colors.green,
         ),
       );

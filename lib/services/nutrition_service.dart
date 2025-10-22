@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:nutrition/models/meal.dart';
 import 'package:nutrition/models/nutrition_log.dart';
 import 'package:nutrition/models/workout.dart';
@@ -70,6 +71,23 @@ class NutritionService {
   ) async {
     final nutritionLogDAO = await _database.nutritionLogDAO;
     return await nutritionLogDAO.getByDateRange(userId, startDate, endDate);
+  }
+
+  Future<int> createNutritionLog(String userId, String date) async {
+    final nutritionLogDAO = await _database.nutritionLogDAO;
+    return await nutritionLogDAO.insert(
+      NutritionLog(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        userId: userId,
+        date: date,
+        totalCalories: 0,
+        totalProtein: 0,
+        totalCarbs: 0,
+        totalFats: 0,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
+    );
   }
 
   Future<int> saveNutritionLog(NutritionLog nutritionLog) async {

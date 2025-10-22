@@ -134,7 +134,7 @@ class _MealPageState extends State<MealPage> {
           margin: EdgeInsets.only(bottom: 12),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.green,
+              backgroundColor: _getMealTypeColor(meal.mealType),
               child: Text(
                 meal.name[0].toUpperCase(),
                 style: TextStyle(
@@ -154,11 +154,15 @@ class _MealPageState extends State<MealPage> {
                 SizedBox(height: 4),
                 Row(
                   children: [
-                    _buildNutritionChip('${meal.calories} cal'),
+                    _buildNutritionChip(
+                      '${meal.calories} cal',
+                      Colors.green[800]!,
+                    ),
                     SizedBox(width: 8),
-                    _buildNutritionChip('${meal.protein}g protein'),
-                    SizedBox(width: 8),
-                    _buildNutritionChip(meal.mealType),
+                    _buildNutritionChip(
+                      meal.mealType,
+                      _getMealTypeColor(meal.mealType),
+                    ),
                   ],
                 ),
               ],
@@ -178,22 +182,36 @@ class _MealPageState extends State<MealPage> {
     );
   }
 
-  Widget _buildNutritionChip(String label) {
+  Widget _buildNutritionChip(String label, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.green[100],
+        color: color,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         label,
         style: TextStyle(
           fontSize: 12,
-          color: Colors.green[800],
+          color: Colors.white,
           fontWeight: FontWeight.w500,
         ),
       ),
     );
+  }
+
+  Color _getMealTypeColor(String mealType) {
+    switch (mealType) {
+      case 'breakfast':
+        return Colors.blue;
+      case 'lunch':
+        return Colors.yellow;
+      case 'dinner':
+        return Colors.red;
+      case 'snack':
+        return Colors.purple;
+    }
+    return Colors.grey;
   }
 
   void _addMeal() {

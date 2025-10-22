@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutrition/models/meal.dart';
 import 'package:nutrition/providers/user_provider.dart';
+import 'package:nutrition/screens/meal/meal_screen.dart';
 import 'package:nutrition/services/nutrition_service.dart';
 import 'package:provider/provider.dart';
 
@@ -24,15 +25,20 @@ class _AddMealScreenState extends State<AddMealScreen> {
   final TextEditingController mealType = TextEditingController();
   final TextEditingController mealImageUrl = TextEditingController();
 
+  static const int carbCalories = 4;
+  static const int protienCalories = 4;
+  static const int fatCalories = 9;
+
   @override
   void initState() {
     super.initState();
     _populateFields();
+    _setDefaultValues();
   }
 
   void _populateFields() {
     if (widget.meal != null) {
-      final meal = widget.meal!;
+      Meal meal = widget.meal!;
       mealName.text = meal.name;
       mealDescription.text = meal.description;
       mealCalories.text = meal.calories.toString();
@@ -43,6 +49,17 @@ class _AddMealScreenState extends State<AddMealScreen> {
       mealNotes.text = meal.notes ?? '';
       mealType.text = meal.mealType;
       mealImageUrl.text = meal.imageUrl ?? '';
+    }
+  }
+
+  void _setDefaultValues() {
+    // Set default values for new meals
+    if (widget.meal == null) {
+      mealProtein.text = "0";
+      mealCarbs.text = "0";
+      mealFats.text = "0";
+      mealServings.text = "1";
+      _calculateCalories();
     }
   }
 
@@ -113,6 +130,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      readOnly: true,
                       controller: mealCalories,
                       decoration: InputDecoration(
                         labelText: "Calories",
@@ -125,6 +143,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) => _calculateCalories(),
                       controller: mealServings,
                       decoration: InputDecoration(
                         labelText: "Servings",
@@ -142,6 +161,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) => _calculateCalories(),
                       controller: mealProtein,
                       decoration: InputDecoration(
                         labelText: "Protein",
@@ -154,6 +174,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) => _calculateCalories(),
                       controller: mealCarbs,
                       decoration: InputDecoration(
                         labelText: "Carbs",
@@ -166,6 +187,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) => _calculateCalories(),
                       controller: mealFats,
                       decoration: InputDecoration(
                         labelText: "Fats",
@@ -288,21 +310,40 @@ class _AddMealScreenState extends State<AddMealScreen> {
       await nutritionService.saveMeal(meal);
 
       // Show success message and navigate back
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            widget.meal != null
-                ? 'Meal "${meal.name}" updated successfully!'
-                : 'Meal "${meal.name}" saved successfully!',
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.meal != null
+                  ? 'Meal "${meal.name}" updated successfully!'
+                  : 'Meal "${meal.name}" saved successfully!',
+            ),
+            backgroundColor: Colors.green,
           ),
-          backgroundColor: Colors.green,
-        ),
+        );
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MealPage()),
       );
-
-      Navigator.pop(context);
     } catch (e) {
       _showErrorDialog('Error saving meal: $e');
     }
+  }
+
+  void _calculateCalories() {
+    if (mealCarbs.text.isEmpty ||
+        mealProtein.text.isEmpty ||
+        mealFats.text.isEmpty ||
+        mealServings.text.isEmpty) {
+      return;
+    }
+    mealCalories.text =
+        ((int.parse(mealCarbs.text) * carbCalories +
+                    int.parse(mealProtein.text) * protienCalories +
+                    int.parse(mealFats.text) * fatCalories) *
+                int.parse(mealServings.text))
+            .toString();
   }
 
   void _showErrorDialog(String message) {

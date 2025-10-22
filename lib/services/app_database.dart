@@ -7,7 +7,7 @@ import 'nutrition_log_dao.dart';
 import 'workout_dao.dart';
 
 const String databaseName = 'nutrition.db';
-const int databaseVersion = 3;
+const int databaseVersion = 5;
 
 class AppDatabase {
   AppDatabase._init();
@@ -56,6 +56,24 @@ class AppDatabase {
       // Drop and recreate meals table for version 3 (schema changes)
       await db.execute('DROP TABLE IF EXISTS meals');
       await _createMealsTable(db);
+    }
+    if (oldVersion < 4) {
+      // Add any changes for version 4
+      // Currently no changes needed
+    }
+    if (oldVersion < 5) {
+      // Add any changes for version 5
+      // Example: Add a new column to users table
+      // await db.execute('ALTER TABLE users ADD COLUMN newField TEXT');
+
+      // Or recreate a table if needed
+      // await db.execute('DROP TABLE IF EXISTS meals');
+      // await _createMealsTable(db);
+      await _createMealsTable(db);
+      await _createNutritionLogsTable(db);
+      await _createWorkoutsTable(db);
+
+      print('Database upgraded from version $oldVersion to $newVersion');
     }
   }
 
